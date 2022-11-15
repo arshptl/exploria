@@ -1,0 +1,7 @@
+node_modules
+config.js
+
+*.log
+*.error
+dist
+DS_Store

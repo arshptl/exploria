@@ -1,0 +1,27 @@
+{
+  "name": "exploria-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js --ignore 'src/db/db.json'"
+  },
+  "keywords": [
+    "itinerery application",
+    "travel"
+  ],
+  "author": "Harsh Patel",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^3.11.1",
+    "date-fns": "^2.29.3",
+    "dotenv": "^16.0.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.7.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
