@@ -9,7 +9,7 @@ module.exports = gql`
   }
 
   type User {
-    id: ID
+    id: ID!
     name: String!
     email: String!
     password: String!
@@ -18,6 +18,13 @@ module.exports = gql`
   type AuthUser {
     token: String!
     user: User!
+  }
+
+  type Settings {
+    id: ID!
+    user: User!
+    theme: Theme!
+    emailNotifications: Boolean!
   }
 
   input SignupInput {

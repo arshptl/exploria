@@ -33,12 +33,11 @@ module.exports = {
       //   avatar: "http",
       // });
       const token = createToken(user);
-      // models.Settings.createOne({
-      //   user: user.id,
-      //   theme: "DARK",
-      //   emailNotifications: true,
-      //   pushNotifications: true,
-      // });
+      await models.Settings.createOne({
+        user: user.id,
+        theme: "DARK",
+        emailNotifications: false,
+      });
       return { token, user };
     },
 
