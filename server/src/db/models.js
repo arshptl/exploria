@@ -10,7 +10,7 @@ const createModel = (db, table) => ({
   },
   
   createOne(input) {
-    console.log("in a create one section", input);
+    // console.log("in a create one section", input);
           let user = new db({
             ...input,
           });
@@ -20,15 +20,12 @@ const createModel = (db, table) => ({
   },
 
   async findOne(filter = {}) {
-    function done(data) {
-      return data;
-    }
     if (filter) {
       const data = await db.find(filter);
       return data;
     }
     else {
-      return db.find();
+      return await db.find();
     }
   }
   
