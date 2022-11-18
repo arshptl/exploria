@@ -10,7 +10,6 @@ require("dotenv").config();
 
 const database = process.env.MONGO_DB;
 
-console.log(database);
 const server = new ApolloServer({
   typeDefs,
   resolvers,
@@ -18,15 +17,15 @@ const server = new ApolloServer({
   //   log: LogDirective,
   //   formatDate: FormatDateDirective,
   // },
-  context({ req, connection }) {
+  context: async({ req, connection }) => {
     const ctx = { ...db };
     if (connection) {
       return { ...ctx, ...connection.context };
     }
     
     const token = req.headers.authorization;
-    const user = getUserFromToken(token);
-    console.log("getUserFromToken", user);
+    const user = await getUserFromToken(token);
+    // console.log("getUserFromToken", user);
     return { ...db, user, createToken };
   },
 });
