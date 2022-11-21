@@ -16,6 +16,11 @@ module.exports = {
         return { error: e };
       }
     },
+
+    itineraries: authenticated(async (_, __, { user, models }) => {
+      const itineraries = await models.User.getItineraries(user.id);
+      return itineraries;
+    }),
   },
   Mutation: {
     async signup(_, { input }, { models, createToken }) {
@@ -62,7 +67,7 @@ module.exports = {
       return { token, userrr };
     },
 
-    createItinerary: authenticated( async(_, { input }, { user, models }) => {
+    createItinerary: authenticated(async (_, { input }, { user, models }) => {
       console.log(input);
 
       // API for fetch the place_id

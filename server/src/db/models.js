@@ -44,6 +44,26 @@ const createModel = (db, table) => ({
     return data;
   },
 
+  async getItineraries(userId){
+    const data = await db.aggregate([
+      {
+        $match: {
+          _id: userId
+        }
+      },
+      {
+        $lookup: {
+          from: "useritineraries",
+          localField: "history",
+          foreignField: "_id",
+          as: "result",
+        },
+      },
+    ]);
+    console.log("data",data);
+    return data;
+  }
+
   //   findOne(filter = {}) {
   //   if (!filter) {
   //     db.get(table).head().value();

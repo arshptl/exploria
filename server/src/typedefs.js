@@ -67,6 +67,7 @@ module.exports = gql`
   type Query {
     me: User!
     users: [User]!
+    itineraries: [UserItinerary]!
   }
 
   type Mutation {
