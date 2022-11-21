@@ -1,4 +1,5 @@
 const { authenticated, authorized } = require("./auth");
+const fetch = require("node-fetch");
 
 module.exports = {
   Query: {
@@ -61,5 +62,59 @@ module.exports = {
       return { token, userrr };
     },
 
+    createItinerary: authenticated( async(_, { input }, { user, models }) => {
+      console.log(input);
+
+      // API for fetch the place_id
+      const responseLocation = await fetch(
+        `https://api.geoapify.com/v1/geocode/search?name=${input.place}&format=json&apiKey=5514092ef9364134adef57e5e8fd44b2`
+      );
+      const dataPID = await responseLocation.json();
+      console.log(dataPID.results[0].place_id);
+      const pid = dataPID.results[0].place_id;
+
+      // API for fetch the attraction places
+      const responseAttraction = await fetch(
+        `https://api.geoapify.com/v2/places?categories=tourism.attraction&filter=place:${pid}&limit=20&apiKey=5514092ef9364134adef57e5e8fd44b2`
+      );
+      const dataAttraction = await responseAttraction.json();
+      // console.log(dataAttraction.features);
+
+      // TODO: simplify the data and store(map) into "Attraction" DB
+      let attractions = dataAttraction.features.map((data) => {
+        return {
+          id: data.properties.place_id,
+          name: data.properties.name,
+          category: data.properties.datasource.raw.tourism,
+          location: data.properties.formatted,
+          // description: data.properties.details,
+        };
+      });
+
+      // console.log(attractions);
+
+      // TODO: simplify the data and store into db
+      const userItineraryObject = {
+        createdAt: Date.now(),
+        title: `${user.name}'s Itinerary - ${input.place}`,
+        days: input.days,
+        cost: "5000",
+        place: input.place,
+        attractions: attractions,
+        flight: "indigo",
+      };
+      let userItinerary = await models.UserItinerary.createOne(
+        userItineraryObject
+      );
+
+      console.log(userItinerary);
+
+      // TODO: update the Itinerary data into "User" DB
+      let updateUser = await models.User.updateById(userItinerary.id, user.id);
+      console.log(updateUser);
+
+      // TODO: Return the Itinerary data for client display
+      return userItineraryObject;
+    }),
   },
 };

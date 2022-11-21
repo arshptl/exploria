@@ -20,16 +20,14 @@ module.exports = gql`
     id: ID!
     name: String!
     category: String!
-    description: String
     location: String!
-    photoUrl: String!
-    time: String!
+    photoUrl: String
   }
 
   type UserItinerary {
     id: ID!
-    createdAt: Date!
-    updatedAt: Date!
+    createdAt: String! @formatDate
+    updatedAt: String @formatDate
     title: String!
     days: String!
     cost: String!
@@ -74,6 +72,6 @@ module.exports = gql`
   type Mutation {
     signup(input: SignupInput!): AuthUser!
     signin(input: SigninInput!): AuthUser!
-    createItinerary(input: ItineraryInput!): UserItinerary!
+    createItinerary(input: ItineraryInput!): UserItinerary
   }
 `;

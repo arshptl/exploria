@@ -2,18 +2,18 @@
 
 const createModel = (db, table) => ({
   findById(ID) {
-        return db.findById(ID);
+    return db.findById(ID);
   },
 
   findAll() {
     return db.find();
   },
-  
+
   createOne(input) {
     // console.log("in a create one section", input);
-          let user = new db({
-            ...input,
-          });
+    let user = new db({
+      ...input,
+    });
 
     user.save();
     return user;
@@ -23,12 +23,27 @@ const createModel = (db, table) => ({
     if (filter) {
       const data = await db.find(filter);
       return data;
-    }
-    else {
+    } else {
       return await db.find();
     }
-  }
-  
+  },
+
+  async updateById(updateData, userID = {}) {
+    const data = await db.findByIdAndUpdate(
+      userID,
+      {
+        $push: {
+          history: updateData,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+
+    return data;
+  },
+
   //   findOne(filter = {}) {
   //   if (!filter) {
   //     db.get(table).head().value();
@@ -47,13 +62,7 @@ const createModel = (db, table) => ({
   //     .orderBy(["createdAt"], ["desc"])
   //     .value();
   // },
-  // updateOne(filter, update) {
-  //   const match = db.get(table).find(filter).value();
 
-  //   db.get(table).find(filter).assign(update).write();
-
-  //   return db.get(table).find({ id: match.id }).value();
-  // },
   // remove(filter) {
   //   return db.get(table).remove(filter).write();
   // },

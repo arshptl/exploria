@@ -1,8 +1,8 @@
 const { model, Schema } = require("mongoose");
 
 const UserItinerarySchema = new Schema({
-    createdAt: Date,
-    updatedAt: Date,
+    createdAt: String,
+    updatedAt: String,
     title: String,
     days: String,
     cost: String,
