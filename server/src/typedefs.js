@@ -13,6 +13,29 @@ module.exports = gql`
     name: String!
     email: String!
     password: String!
+    history: [String]!
+  }
+
+  type Attration {
+    id: ID!
+    name: String!
+    category: String!
+    description: String
+    location: String!
+    photoUrl: String!
+    time: String!
+  }
+
+  type UserItinerary {
+    id: ID!
+    createdAt: Date!
+    updatedAt: Date!
+    title: String!
+    days: String!
+    cost: String!
+    place: String!
+    attractions: [Attration]!
+    flight: String!
   }
 
   type AuthUser {
@@ -38,6 +61,11 @@ module.exports = gql`
     password: String!
   }
 
+  input ItineraryInput {
+    place: String!
+    days: String!
+  }
+
   type Query {
     me: User!
     users: [User]!
@@ -46,5 +74,6 @@ module.exports = gql`
   type Mutation {
     signup(input: SignupInput!): AuthUser!
     signin(input: SigninInput!): AuthUser!
+    createItinerary(input: ItineraryInput!): UserItinerary!
   }
 `;

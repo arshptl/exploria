@@ -4,12 +4,7 @@ const UserSchema = new Schema({
         name: String,
         email: String,
         password: String,
-        // history: [
-        //         {
-        //                 type: Schema.Types.ObjectId,
-        //                 ref: "Places"
-        //         }
-        // ]
+        history: [String],
 });
 
 module.exports = model('User', UserSchema);
