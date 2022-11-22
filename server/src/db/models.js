@@ -1,4 +1,5 @@
 // const nano = require("nanoid");
+const { default: mongoose } = require("mongoose");
 
 const createModel = (db, table) => ({
   findById(ID) {
@@ -44,24 +45,96 @@ const createModel = (db, table) => ({
     return data;
   },
 
-  async getItineraries(userId){
+  async getItineraries(userId) {
+    let userID = mongoose.Types.ObjectId(userId);
+
     const data = await db.aggregate([
-      {
-        $match: {
-          _id: userId
-        }
-      },
-      {
-        $lookup: {
-          from: "useritineraries",
-          localField: "history",
-          foreignField: "_id",
-          as: "result",
+      // {
+      //   $match: {
+      //     _id: userId
+      //   }
+      // },
+      // {
+      //   $lookup: {
+      //     from: "useritineraries",
+      //     localField: "history",
+      //     foreignField: "_id",
+      //     as: "result",
+      //   },
+      // },
+
+      // recent solution
+      /* [
+        {
+          $match: {
+            _id: userID,
+          },
         },
-      },
+        {
+          $unwind: {
+            path: "$history",
+            includeArrayIndex: "string",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "useritineraries",
+            localField: "history",
+            foreignField: "_id",
+            as: "itineraries",
+          },
+        },
+      ], */
+
+      [
+        {
+          $match: {
+            _id: userID,
+          },
+        },
+        {
+          $unwind: {
+            path: "$history",
+            includeArrayIndex: "string",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "useritineraries",
+            localField: "history",
+            foreignField: "_id",
+            as: "result",
+          },
+        },
+        {
+          $unwind: {
+            path: "$result",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              id: "$_id",
+            },
+            result: {
+              $addToSet: "$result",
+            },
+          },
+        },
+        {
+          $project: {
+            result: 1,
+          },
+        },
+      ],
     ]);
-    console.log("data",data);
-    return data;
+    // const useritineraries = data.map((res) => {
+    //   return res.result;
+    // });  
+    console.log("data", data[0].result);
+    return data[0].result;
   }
 
   //   findOne(filter = {}) {

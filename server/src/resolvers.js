@@ -1,5 +1,6 @@
 const { authenticated, authorized } = require("./auth");
 const fetch = require("node-fetch");
+const { default: mongoose } = require("mongoose");
 
 module.exports = {
   Query: {
@@ -32,12 +33,6 @@ module.exports = {
 
       let user = await models.User.createOne(input);
 
-      // const user = await models.User.createOne(...input);
-      // const user = models.User.createOne({
-      //   ...input,
-      //   verified: false,
-      //   avatar: "http",
-      // });
       const token = createToken(user);
       await models.Settings.createOne({
         user: user.id,
@@ -83,22 +78,18 @@ module.exports = {
         `https://api.geoapify.com/v2/places?categories=tourism.attraction&filter=place:${pid}&limit=20&apiKey=5514092ef9364134adef57e5e8fd44b2`
       );
       const dataAttraction = await responseAttraction.json();
-      // console.log(dataAttraction.features);
 
-      // TODO: simplify the data and store(map) into "Attraction" DB
+      // simplify the data and store it in a object
       let attractions = dataAttraction.features.map((data) => {
         return {
           id: data.properties.place_id,
           name: data.properties.name,
           category: data.properties.datasource.raw.tourism,
           location: data.properties.formatted,
-          // description: data.properties.details,
         };
       });
 
-      // console.log(attractions);
-
-      // TODO: simplify the data and store into db
+      // append attractions into userItineraryObject
       const userItineraryObject = {
         createdAt: Date.now(),
         title: `${user.name}'s Itinerary - ${input.place}`,
@@ -108,17 +99,19 @@ module.exports = {
         attractions: attractions,
         flight: "indigo",
       };
+      
+      // Upload userItineraryObject into MongoDB
       let userItinerary = await models.UserItinerary.createOne(
         userItineraryObject
       );
 
-      console.log(userItinerary);
-
-      // TODO: update the Itinerary data into "User" DB
-      let updateUser = await models.User.updateById(userItinerary.id, user.id);
+      let userItineraryID = mongoose.Types.ObjectId(userItinerary.id)
+      
+      // update the Itinerary data into "User" DB
+      let updateUser = await models.User.updateById(userItineraryID, user.id);
       console.log(updateUser);
 
-      // TODO: Return the Itinerary data for client display
+      // return the Itinerary data for client display
       return userItineraryObject;
     }),
   },
