@@ -12,4 +12,18 @@ const GET_USERS = gql`
   }
 `;
 
-export { GET_USERS };
+const GET_ALL_SEATS = gql`
+query MyQuery {
+  seatingArrangements(condition: { floorId: 31 }) {
+    edges {
+      node {
+        floorId
+      }
+    }
+  }
+}
+`;
+
+
+
+export { GET_USERS, GET_ALL_SEATS };
