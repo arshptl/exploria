@@ -1,6 +1,8 @@
 const { authenticated, authorized } = require("./auth");
 const fetch = require("node-fetch");
 const { default: mongoose } = require("mongoose");
+const { AuthenticationError } = require("apollo-server");
+// const { ApolloError } = require("apollo-server-errors");
 
 module.exports = {
   Query: {
@@ -47,7 +49,8 @@ module.exports = {
       const user = await models.User.findOne(input);
       console.log(user);
 
-      if (!user) {
+      if (user.length === 0) {
+        console.log("wrong email + password combo");
         throw new AuthenticationError("wrong email + password combo");
       }
 
@@ -83,7 +86,7 @@ module.exports = {
       let attractions = dataAttraction.features.map((data) => {
         return {
           id: data.properties.place_id,
-          name: data.properties.name,
+          name: data.properties.name ?? "",
           category: data.properties.datasource.raw.tourism,
           location: data.properties.formatted,
         };
@@ -99,14 +102,14 @@ module.exports = {
         attractions: attractions,
         flight: "indigo",
       };
-      
+
       // Upload userItineraryObject into MongoDB
       let userItinerary = await models.UserItinerary.createOne(
         userItineraryObject
       );
 
-      let userItineraryID = mongoose.Types.ObjectId(userItinerary.id)
-      
+      let userItineraryID = mongoose.Types.ObjectId(userItinerary.id);
+
       // update the Itinerary data into "User" DB
       let updateUser = await models.User.updateById(userItineraryID, user.id);
       console.log(updateUser);
