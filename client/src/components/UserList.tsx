@@ -1,24 +1,16 @@
-import { useQuery } from '@apollo/client';
-import { GET_USERS } from "../queries/queries";
+import { useGetUsersQuery } from '@/generated/graphql';
 
-type UserType = {
-    email: string,
-    history: [string],
-    id: string,
-    name: string
-}
-
-const BookList = () => {
-    const { loading, error, data } = useQuery(GET_USERS);
-
+const UserList = () => {
+    const { data, loading, error } = useGetUsersQuery();
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error :(</p>;
+
     return (
         <div>
             <ul id="book-list">
-                {data.users.map((user: UserType) => {
-                    return <li key={user.id}>
-                        {user.name}
+                {data?.users.map((user) => {
+                    return <li key={user?.id}>
+                        {user?.name}
                     </li>
                 })}
             </ul>
@@ -26,4 +18,4 @@ const BookList = () => {
     )
 }
 
-export default BookList
+export default UserList

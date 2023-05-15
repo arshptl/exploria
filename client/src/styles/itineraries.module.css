@@ -1,0 +1,21 @@
+.globalWrapper {
+  padding: 5em;
+  background-color: aliceblue;
+}
+.itineraryCardWrapper {
+  display: flex;
+  flex-direction: row;
+  /* justify-content: ; */
+  align-items: flex-start;
+  width: 100%;
+  gap: 2em;
+  border-radius: 2em;
+}
+
+.itineraryCard {
+  padding: 2em;
+  /* width: ; */
+  border-radius: 1em;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
